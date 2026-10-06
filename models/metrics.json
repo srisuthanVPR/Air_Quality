@@ -1,0 +1,560 @@
+{
+  "schema_version": 2,
+  "model": {
+    "name": "Air Quality Classifier",
+    "algorithm": "RandomForestClassifier",
+    "params": {
+      "n_estimators": 100,
+      "random_state": 42,
+      "n_jobs": -1
+    },
+    "dataset": "AirQualityUCI",
+    "n_features": 12,
+    "features": [
+      "CO(GT)",
+      "PT08.S1(CO)",
+      "C6H6(GT)",
+      "PT08.S2(NMHC)",
+      "NOx(GT)",
+      "PT08.S3(NOx)",
+      "NO2(GT)",
+      "PT08.S4(NO2)",
+      "PT08.S5(O3)",
+      "T",
+      "RH",
+      "AH"
+    ],
+    "target": "AQ_Category",
+    "target_rule": "Each hourly reading is scored from CO(GT), NOx(GT) and NO2(GT). CO: >1 \u2192 +1, >2.5 \u2192 +2, >5 \u2192 +3. NOx: >50 \u2192 +1, >150 \u2192 +2, >300 \u2192 +3. NO2: >80 \u2192 +1, >150 \u2192 +2. Score \u22656 Very Unhealthy \u00b7 \u22654 Unhealthy \u00b7 \u22652 Moderate \u00b7 else Good.",
+    "classes": {
+      "0": "Good",
+      "1": "Moderate",
+      "2": "Unhealthy",
+      "3": "Very Unhealthy"
+    },
+    "uses_scaler": true
+  },
+  "features": [
+    {
+      "name": "CO(GT)",
+      "label": "Carbon Monoxide",
+      "unit": "mg/m\u00b3",
+      "group": "pollutant",
+      "min": 0.0,
+      "max": 20.0,
+      "step": 0.1,
+      "decimals": 2,
+      "tooltip": "Reference-grade carbon monoxide concentration. The dominant driver of the air-quality score in this model.",
+      "placeholder": 1.8,
+      "aliases": [],
+      "observed_min": 0.1,
+      "observed_max": 11.9,
+      "observed_mean": 2.0903,
+      "observed_std": 1.3251
+    },
+    {
+      "name": "PT08.S1(CO)",
+      "label": "CO Sensor (PT08.S1)",
+      "unit": "sensor output",
+      "group": "sensor",
+      "min": 500.0,
+      "max": 2500.0,
+      "step": 1.0,
+      "decimals": 0,
+      "tooltip": "Tin-oxide (PT08) sensor response to carbon monoxide. Higher values indicate higher CO concentration.",
+      "placeholder": 1063.0,
+      "aliases": [],
+      "observed_min": 647.0,
+      "observed_max": 2040.0,
+      "observed_mean": 1098.5101,
+      "observed_std": 213.2553
+    },
+    {
+      "name": "C6H6(GT)",
+      "label": "Benzene",
+      "unit": "\u00b5g/m\u00b3",
+      "group": "pollutant",
+      "min": 0.0,
+      "max": 100.0,
+      "step": 0.1,
+      "decimals": 2,
+      "tooltip": "Benzene (C6H6) ground-truth concentration, a known carcinogen.",
+      "placeholder": 8.2,
+      "aliases": [],
+      "observed_min": 0.1,
+      "observed_max": 63.7,
+      "observed_mean": 10.0155,
+      "observed_std": 7.3232
+    },
+    {
+      "name": "PT08.S2(NMHC)",
+      "label": "NMHC Sensor (PT08.S2)",
+      "unit": "sensor output",
+      "group": "sensor",
+      "min": 300.0,
+      "max": 2600.0,
+      "step": 1.0,
+      "decimals": 0,
+      "tooltip": "Titania-based sensor sensitive to non-methane hydrocarbons (NMHC). A strong proxy for fuel vapour and traffic emissions.",
+      "placeholder": 909.0,
+      "aliases": [],
+      "observed_min": 383.0,
+      "observed_max": 2214.0,
+      "observed_mean": 938.0702,
+      "observed_std": 262.0547
+    },
+    {
+      "name": "NOx(GT)",
+      "label": "Nitrogen Oxides",
+      "unit": "ppb",
+      "group": "pollutant",
+      "min": 0.0,
+      "max": 2000.0,
+      "step": 1.0,
+      "decimals": 0,
+      "tooltip": "Total nitrogen oxides (NO + NO2) in parts per billion. Traffic is the main source; the single most important feature in the model.",
+      "placeholder": 180.0,
+      "aliases": [],
+      "observed_min": 2.0,
+      "observed_max": 1479.0,
+      "observed_mean": 235.3623,
+      "observed_std": 195.3891
+    },
+    {
+      "name": "PT08.S3(NOx)",
+      "label": "NOx Sensor (PT08.S3)",
+      "unit": "sensor output",
+      "group": "sensor",
+      "min": 250.0,
+      "max": 3000.0,
+      "step": 1.0,
+      "decimals": 0,
+      "tooltip": "Tungsten-oxide sensor response to nitrogen oxides.",
+      "placeholder": 806.0,
+      "aliases": [],
+      "observed_min": 322.0,
+      "observed_max": 2683.0,
+      "observed_mean": 834.4342,
+      "observed_std": 252.2218
+    },
+    {
+      "name": "NO2(GT)",
+      "label": "Nitrogen Dioxide",
+      "unit": "\u00b5g/m\u00b3",
+      "group": "pollutant",
+      "min": 0.0,
+      "max": 450.0,
+      "step": 1.0,
+      "decimals": 0,
+      "tooltip": "Nitrogen dioxide ground-truth concentration. A respiratory irritant produced mainly by combustion engines.",
+      "placeholder": 109.0,
+      "aliases": [],
+      "observed_min": 2.0,
+      "observed_max": 340.0,
+      "observed_mean": 112.3845,
+      "observed_std": 44.0211
+    },
+    {
+      "name": "PT08.S4(NO2)",
+      "label": "NO2 Sensor (PT08.S4)",
+      "unit": "sensor output",
+      "group": "sensor",
+      "min": 450.0,
+      "max": 3200.0,
+      "step": 1.0,
+      "decimals": 0,
+      "tooltip": "Tungsten-oxide sensor response to nitrogen dioxide.",
+      "placeholder": 1463.0,
+      "aliases": [],
+      "observed_min": 551.0,
+      "observed_max": 2775.0,
+      "observed_mean": 1456.5065,
+      "observed_std": 339.9335
+    },
+    {
+      "name": "PT08.S5(O3)",
+      "label": "Ozone Sensor (PT08.S5)",
+      "unit": "sensor output",
+      "group": "sensor",
+      "min": 150.0,
+      "max": 3000.0,
+      "step": 1.0,
+      "decimals": 0,
+      "tooltip": "Indium-oxide sensor response to ground-level ozone (O3), a secondary pollutant formed by sunlight acting on NOx and VOCs.",
+      "placeholder": 963.0,
+      "aliases": [],
+      "observed_min": 221.0,
+      "observed_max": 2523.0,
+      "observed_mean": 1020.7542,
+      "observed_std": 391.4199
+    },
+    {
+      "name": "T",
+      "label": "Temperature",
+      "unit": "\u00b0C",
+      "group": "meteorology",
+      "min": -20.0,
+      "max": 60.0,
+      "step": 0.1,
+      "decimals": 1,
+      "tooltip": "Ambient air temperature in \u00b0C. Warm, still weather traps pollutants near the ground.",
+      "placeholder": 17.8,
+      "aliases": [],
+      "observed_min": -1.9,
+      "observed_max": 44.6,
+      "observed_mean": 18.2992,
+      "observed_std": 8.6726
+    },
+    {
+      "name": "RH",
+      "label": "Relative Humidity",
+      "unit": "%",
+      "group": "meteorology",
+      "min": 0.0,
+      "max": 100.0,
+      "step": 0.1,
+      "decimals": 1,
+      "tooltip": "Relative humidity in percent. Humidity alters how sensor drift appears and helps drive photochemical ozone formation.",
+      "placeholder": 49.6,
+      "aliases": [],
+      "observed_min": 9.2,
+      "observed_max": 88.7,
+      "observed_mean": 49.2473,
+      "observed_std": 17.0031
+    },
+    {
+      "name": "AH",
+      "label": "Absolute Humidity",
+      "unit": "g/m\u00b3",
+      "group": "meteorology",
+      "min": 0.05,
+      "max": 3.0,
+      "step": 0.001,
+      "decimals": 4,
+      "tooltip": "Absolute humidity \u2014 the actual mass of water vapour per cubic metre of air.",
+      "placeholder": 0.9954,
+      "aliases": [],
+      "observed_min": 0.1847,
+      "observed_max": 2.231,
+      "observed_mean": 1.0244,
+      "observed_std": 0.3965
+    }
+  ],
+  "metrics": {
+    "accuracy": 0.9979,
+    "precision": 0.9979,
+    "recall": 0.9979,
+    "f1_score": 0.9979
+  },
+  "per_class": [
+    {
+      "class_id": 0,
+      "label": "Good",
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "support": 265
+    },
+    {
+      "class_id": 1,
+      "label": "Moderate",
+      "precision": 0.996,
+      "recall": 0.998,
+      "f1_score": 0.997,
+      "support": 498
+    },
+    {
+      "class_id": 2,
+      "label": "Unhealthy",
+      "precision": 0.9986,
+      "recall": 0.9958,
+      "f1_score": 0.9972,
+      "support": 708
+    },
+    {
+      "class_id": 3,
+      "label": "Very Unhealthy",
+      "precision": 0.9975,
+      "recall": 1.0,
+      "f1_score": 0.9987,
+      "support": 395
+    }
+  ],
+  "confusion_matrix": [
+    [
+      265,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      497,
+      1,
+      0
+    ],
+    [
+      0,
+      2,
+      705,
+      1
+    ],
+    [
+      0,
+      0,
+      0,
+      395
+    ]
+  ],
+  "confusion_matrix_normalized": [
+    [
+      0.142,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.2663,
+      0.0005,
+      0.0
+    ],
+    [
+      0.0,
+      0.0011,
+      0.3778,
+      0.0005
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      0.2117
+    ]
+  ],
+  "confusion_labels": [
+    "Good",
+    "Moderate",
+    "Unhealthy",
+    "Very Unhealthy"
+  ],
+  "model_comparison": [
+    {
+      "name": "Logistic Regression",
+      "algorithm": "LogisticRegression",
+      "accuracy": 0.9009,
+      "precision": 0.901,
+      "recall": 0.9009,
+      "f1_score": 0.9006,
+      "is_primary": false
+    },
+    {
+      "name": "Decision Tree",
+      "algorithm": "DecisionTreeClassifier",
+      "accuracy": 0.9995,
+      "precision": 0.9995,
+      "recall": 0.9995,
+      "f1_score": 0.9995,
+      "is_primary": false
+    },
+    {
+      "name": "Random Forest (primary)",
+      "algorithm": "RandomForestClassifier",
+      "accuracy": 0.9979,
+      "precision": 0.9979,
+      "recall": 0.9979,
+      "f1_score": 0.9979,
+      "is_primary": true
+    },
+    {
+      "name": "Majority Class (Dummy)",
+      "algorithm": "DummyClassifier",
+      "accuracy": 0.3794,
+      "precision": 0.144,
+      "recall": 0.3794,
+      "f1_score": 0.2087,
+      "is_primary": false
+    }
+  ],
+  "feature_importances": {
+    "CO(GT)": 0.215355,
+    "PT08.S1(CO)": 0.034564,
+    "C6H6(GT)": 0.032769,
+    "PT08.S2(NMHC)": 0.032658,
+    "NOx(GT)": 0.33744,
+    "PT08.S3(NOx)": 0.039815,
+    "NO2(GT)": 0.211647,
+    "PT08.S4(NO2)": 0.02113,
+    "PT08.S5(O3)": 0.037144,
+    "T": 0.013147,
+    "RH": 0.011995,
+    "AH": 0.012337
+  },
+  "training_medians": {
+    "CO(GT)": 1.8,
+    "PT08.S1(CO)": 1063.0,
+    "C6H6(GT)": 8.2,
+    "PT08.S2(NMHC)": 909.0,
+    "NOx(GT)": 180.0,
+    "PT08.S3(NOx)": 806.0,
+    "NO2(GT)": 109.0,
+    "PT08.S4(NO2)": 1463.0,
+    "PT08.S5(O3)": 963.0,
+    "T": 17.8,
+    "RH": 49.6,
+    "AH": 0.9954
+  },
+  "scaler_mean": [
+    2.0913,
+    1099.029893,
+    10.028579,
+    938.683378,
+    235.539142,
+    833.700134,
+    112.360858,
+    1457.68378,
+    1021.061796,
+    18.366542,
+    49.216568,
+    1.026653
+  ],
+  "scaler_scale": [
+    1.32567,
+    213.730144,
+    7.320336,
+    261.774184,
+    195.862702,
+    251.634604,
+    44.05803,
+    338.503671,
+    391.478956,
+    8.668597,
+    17.043977,
+    0.394993
+  ],
+  "split": {
+    "train_samples": 7460,
+    "test_samples": 1866,
+    "total_samples": 9326,
+    "test_size": 0.2,
+    "random_state": 42,
+    "stratified": true
+  },
+  "train_samples": 7460,
+  "test_samples": 1866,
+  "total_samples": 9326,
+  "n_features": 12,
+  "dataset_stats": {
+    "CO(GT)": {
+      "mean": 2.0903,
+      "median": 1.8,
+      "std": 1.3251,
+      "min": 0.1,
+      "max": 11.9,
+      "missing": 0
+    },
+    "PT08.S1(CO)": {
+      "mean": 1098.5101,
+      "median": 1063.0,
+      "std": 213.2553,
+      "min": 647.0,
+      "max": 2040.0,
+      "missing": 0
+    },
+    "C6H6(GT)": {
+      "mean": 10.0155,
+      "median": 8.2,
+      "std": 7.3232,
+      "min": 0.1,
+      "max": 63.7,
+      "missing": 0
+    },
+    "PT08.S2(NMHC)": {
+      "mean": 938.0702,
+      "median": 909.0,
+      "std": 262.0547,
+      "min": 383.0,
+      "max": 2214.0,
+      "missing": 0
+    },
+    "NOx(GT)": {
+      "mean": 235.3623,
+      "median": 180.0,
+      "std": 195.3891,
+      "min": 2.0,
+      "max": 1479.0,
+      "missing": 0
+    },
+    "PT08.S3(NOx)": {
+      "mean": 834.4342,
+      "median": 806.0,
+      "std": 252.2218,
+      "min": 322.0,
+      "max": 2683.0,
+      "missing": 0
+    },
+    "NO2(GT)": {
+      "mean": 112.3845,
+      "median": 109.0,
+      "std": 44.0211,
+      "min": 2.0,
+      "max": 340.0,
+      "missing": 0
+    },
+    "PT08.S4(NO2)": {
+      "mean": 1456.5065,
+      "median": 1463.0,
+      "std": 339.9335,
+      "min": 551.0,
+      "max": 2775.0,
+      "missing": 0
+    },
+    "PT08.S5(O3)": {
+      "mean": 1020.7542,
+      "median": 963.0,
+      "std": 391.4199,
+      "min": 221.0,
+      "max": 2523.0,
+      "missing": 0
+    },
+    "T": {
+      "mean": 18.2992,
+      "median": 17.8,
+      "std": 8.6726,
+      "min": -1.9,
+      "max": 44.6,
+      "missing": 0
+    },
+    "RH": {
+      "mean": 49.2473,
+      "median": 49.6,
+      "std": 17.0031,
+      "min": 9.2,
+      "max": 88.7,
+      "missing": 0
+    },
+    "AH": {
+      "mean": 1.0244,
+      "median": 0.9954,
+      "std": 0.3965,
+      "min": 0.1847,
+      "max": 2.231,
+      "missing": 0
+    }
+  },
+  "class_distribution": {
+    "Good": 1325,
+    "Moderate": 2486,
+    "Unhealthy": 3540,
+    "Very Unhealthy": 1975
+  },
+  "dataset_rows_raw": 9471,
+  "trained_at": "2026-10-06T06:09:14.158245+00:00",
+  "environment": {
+    "python": "3.13.5",
+    "sklearn": "1.5.2",
+    "pandas": "2.2.3",
+    "numpy": "2.1.3",
+    "platform": "win32"
+  }
+}

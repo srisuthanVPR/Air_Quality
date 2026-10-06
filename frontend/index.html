@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0f766e" />
+    <meta
+      name="description"
+      content="Air Quality Intelligence - machine learning powered analysis and prediction of air quality from the UCI Air Quality (AirQualityUCI) dataset."
+    />
+    <title>Air Quality Intelligence</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      // Apply the saved theme before first paint so there is no flash of the
+      // wrong colour scheme on reload.
+      (function () {
+        try {
+          var stored = localStorage.getItem('aq-theme');
+          var prefersDark =
+            window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var dark = stored ? stored === 'dark' : prefersDark;
+          document.documentElement.classList.toggle('dark', dark);
+        } catch (e) {
+          /* localStorage can be blocked - fall back to light */
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>
+      Air Quality Intelligence needs JavaScript enabled to run. Please enable it and reload the
+      page.
+    </noscript>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

@@ -1,0 +1,420 @@
+@import 'tailwindcss';
+
+/*
+ * Dark mode is class-driven (`<html class="dark">`), not media-driven.
+ * Tailwind v4 does not enable this automatically - without this line every
+ * `dark:` utility in the app would silently do nothing.
+ */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* -------------------------------------------------------------------------- */
+/* Design tokens                                                              */
+/* -------------------------------------------------------------------------- */
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  /* Environmental palette: teal/emerald primary with a cyan accent. */
+  --color-brand-50: #f0fdfa;
+  --color-brand-100: #ccfbf1;
+  --color-brand-200: #99f6e4;
+  --color-brand-300: #5eead4;
+  --color-brand-400: #2dd4bf;
+  --color-brand-500: #14b8a6;
+  --color-brand-600: #0d9488;
+  --color-brand-700: #0f766e;
+  --color-brand-800: #115e59;
+  --color-brand-900: #134e4a;
+  --color-brand-950: #042f2e;
+
+  --color-accent-400: #38bdf8;
+  --color-accent-500: #0ea5e9;
+  --color-accent-600: #0284c7;
+
+  /* Air-quality status colours, mirroring backend.ml.config.CLASS_COLORS. */
+  --color-aq-good: #10b981;
+  --color-aq-moderate: #f59e0b;
+  --color-aq-unhealthy: #f97316;
+  --color-aq-critical: #ef4444;
+
+  --shadow-soft: 0 1px 2px rgb(15 23 42 / 0.04), 0 8px 24px -8px rgb(15 23 42 / 0.12);
+  --shadow-lift: 0 2px 4px rgb(15 23 42 / 0.05), 0 18px 40px -12px rgb(15 23 42 / 0.22);
+
+  --animate-fade-up: fade-up 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-scale-in: scale-in 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-shimmer: shimmer 1.6s linear infinite;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  from {
+    background-position: -180% 0;
+  }
+  to {
+    background-position: 180% 0;
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.035);
+    opacity: 0.86;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Base                                                                       */
+/* -------------------------------------------------------------------------- */
+@layer base {
+  * {
+    border-color: --alpha(var(--color-slate-200) / 80%);
+  }
+
+  .dark * {
+    border-color: --alpha(var(--color-slate-800) / 80%);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scrollbar-gutter: stable;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    background-color: var(--color-slate-50);
+    color: var(--color-slate-800);
+    font-family: var(--font-sans);
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'ss01';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Nothing should ever push the page sideways on mobile. */
+    overflow-x: hidden;
+  }
+
+  .dark body {
+    background-color: var(--color-slate-950);
+    color: var(--color-slate-100);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand-500);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background-color: --alpha(var(--color-brand-500) / 25%);
+  }
+
+  /* Respect users who ask for less motion. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: --alpha(var(--color-slate-400) / 45%);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: --alpha(var(--color-slate-500) / 65%);
+    background-clip: content-box;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Components                                                                 */
+/* -------------------------------------------------------------------------- */
+@layer components {
+  /* Panel / card ---------------------------------------------------------- */
+  .panel {
+    @apply rounded-2xl border border-slate-200/80 bg-white shadow-soft transition-all duration-300;
+  }
+  .dark .panel {
+    @apply border-slate-800 bg-slate-900;
+  }
+  .panel-hover:hover {
+    @apply -translate-y-0.5 shadow-lift;
+  }
+
+  /* Frosted surface used on the sidebar, topbar and hero overlays. -------- */
+  .glass {
+    background-color: --alpha(#ffffff / 78%);
+    backdrop-filter: blur(16px) saturate(160%);
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
+  }
+  .dark .glass {
+    background-color: --alpha(var(--color-slate-900) / 72%);
+  }
+
+  /* Buttons --------------------------------------------------------------- */
+  /* Base layout lives in one selector list on purpose: Tailwind v4 cannot
+     `@apply` a custom class, and re-declaring these utilities inside each
+     variant would let `btn-sm` and `btn-primary` fight over the same
+     properties depending on cascade order. Variants below only add colour. */
+  .btn,
+  .btn-primary,
+  .btn-secondary,
+  .btn-ghost,
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm
+           font-semibold transition-all duration-200 select-none
+           disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:translate-y-0;
+  }
+
+  .btn-primary {
+    @apply text-white shadow-sm;
+    background-image: linear-gradient(
+      135deg,
+      var(--color-brand-600),
+      var(--color-brand-500) 45%,
+      var(--color-accent-500)
+    );
+  }
+  .btn-primary:not(:disabled):hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px -8px --alpha(var(--color-brand-600) / 65%);
+  }
+  .btn-primary:not(:disabled):active {
+    transform: translateY(0);
+  }
+
+  .btn-secondary {
+    @apply border border-slate-300 bg-white text-slate-700 hover:bg-slate-50
+           hover:border-slate-400 hover:text-slate-900;
+  }
+  .dark .btn-secondary {
+    @apply border-slate-700 bg-slate-800/60 text-slate-200 hover:bg-slate-800 hover:border-slate-600 hover:text-white;
+  }
+
+  .btn-ghost {
+    @apply text-slate-600 hover:bg-slate-100 hover:text-slate-900;
+  }
+  .dark .btn-ghost {
+    @apply text-slate-300 hover:bg-slate-800 hover:text-white;
+  }
+
+  .btn-danger {
+    @apply border border-red-300 bg-white text-red-600 hover:bg-red-50 hover:border-red-400;
+  }
+  .dark .btn-danger {
+    @apply border-red-900/70 bg-red-950/40 text-red-300 hover:bg-red-950/70;
+  }
+
+  /* Size modifier: declared last so its padding/radius win over the base. */
+  .btn-sm {
+    @apply gap-1.5 rounded-lg px-3 py-1.5 text-xs;
+  }
+
+  /* Form controls --------------------------------------------------------- */
+  .field,
+  .select {
+    @apply w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-800
+           transition-all duration-200 placeholder:text-slate-400
+           hover:border-slate-400 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/12 focus:outline-none
+           disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400;
+  }
+  .dark .field,
+  .dark .select {
+    @apply border-slate-700 bg-slate-950/60 text-slate-100 placeholder:text-slate-500
+           hover:border-slate-600 focus:border-brand-500 focus:ring-brand-500/20;
+  }
+
+  .field-error {
+    @apply border-red-400 ring-4 ring-red-500/10;
+  }
+  .dark .field-error {
+    @apply border-red-500/70 ring-red-500/15;
+  }
+
+  .field-label {
+    @apply flex items-center gap-1.5 text-xs font-semibold tracking-wide text-slate-600 uppercase;
+  }
+  .dark .field-label {
+    @apply text-slate-400;
+  }
+
+  .select {
+    @apply cursor-pointer appearance-none bg-no-repeat pr-9;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-position: right 0.65rem center;
+  }
+  .dark .select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  }
+
+  /* Sidebar navigation ---------------------------------------------------- */
+  .nav-link {
+    @apply relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium
+           text-slate-600 transition-all duration-200 hover:bg-slate-100 hover:text-slate-900;
+  }
+  .dark .nav-link {
+    @apply text-slate-400 hover:bg-slate-800/70 hover:text-white;
+  }
+
+  .nav-link-active {
+    @apply bg-brand-50 font-semibold text-brand-700;
+  }
+  .dark .nav-link-active {
+    @apply bg-brand-500/12 text-brand-300;
+  }
+
+  /* Badges ---------------------------------------------------------------- */
+  .badge {
+    @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold whitespace-nowrap;
+  }
+
+  /* Tables ---------------------------------------------------------------- */
+  .table-shell {
+    @apply overflow-x-auto rounded-xl border border-slate-200/80;
+    scrollbar-width: thin;
+  }
+  .dark .table-shell {
+    @apply border-slate-800;
+  }
+
+  .th {
+    @apply px-4 py-3 text-left text-[11px] font-bold tracking-wider text-slate-500 uppercase;
+  }
+  .dark .th {
+    @apply text-slate-400;
+  }
+
+  .td {
+    @apply px-4 py-3 text-sm text-slate-700;
+  }
+  .dark .td {
+    @apply text-slate-300;
+  }
+
+  .tr-hover {
+    @apply transition-colors hover:bg-slate-50;
+  }
+  .dark .tr-hover {
+    @apply hover:bg-slate-800/40;
+  }
+
+  /* Misc ------------------------------------------------------------------ */
+  .skeleton {
+    @apply rounded-lg;
+    background-image: linear-gradient(
+      90deg,
+      --alpha(var(--color-slate-200) / 100%) 25%,
+      --alpha(var(--color-slate-100) / 100%) 50%,
+      --alpha(var(--color-slate-200) / 100%) 75%
+    );
+    background-size: 200% 100%;
+    animation: var(--animate-shimmer);
+  }
+  .dark .skeleton {
+    background-image: linear-gradient(
+      90deg,
+      --alpha(var(--color-slate-800) / 100%) 25%,
+      --alpha(var(--color-slate-700) / 100%) 50%,
+      --alpha(var(--color-slate-800) / 100%) 75%
+    );
+  }
+
+  .spinner {
+    @apply inline-block rounded-full;
+    width: 1.15rem;
+    height: 1.15rem;
+    border: 2px solid --alpha(currentColor / 22%);
+    border-top-color: currentColor;
+    animation: spin 0.7s linear infinite;
+  }
+
+  .hero-gradient {
+    background-image: radial-gradient(
+        ellipse 80% 60% at 15% 10%,
+        --alpha(var(--color-brand-400) / 45%),
+        transparent 60%
+      ),
+      radial-gradient(ellipse 70% 60% at 85% 20%, --alpha(var(--color-accent-500) / 40%), transparent 60%),
+      linear-gradient(135deg, var(--color-brand-800), var(--color-brand-950) 55%, #062a38);
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(
+      120deg,
+      var(--color-brand-600),
+      var(--color-brand-400) 40%,
+      var(--color-accent-500)
+    );
+  }
+  .dark .text-gradient {
+    background-image: linear-gradient(
+      120deg,
+      var(--color-brand-300),
+      var(--color-brand-200) 40%,
+      var(--color-accent-400)
+    );
+  }
+
+  .scroll-fade-x {
+    @apply overflow-x-auto;
+    scrollbar-width: thin;
+  }
+
+  /* Recharts leaves a focus ring on the surface; it adds nothing. */
+  .recharts-wrapper:focus,
+  .recharts-surface:focus {
+    outline: none;
+  }
+  .recharts-cartesian-axis-tick text {
+    font-size: 11px;
+    fill: var(--color-slate-500);
+  }
+  .dark .recharts-cartesian-axis-tick text {
+    fill: var(--color-slate-400);
+  }
+}

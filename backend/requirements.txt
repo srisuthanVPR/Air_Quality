@@ -1,0 +1,16 @@
+# Air Quality Intelligence - backend dependencies
+# NOTE: keep these as lower bounds. The committed models/model.pkl is a pickle
+# produced by the versions listed in models/metrics.json -> "environment".
+# Installing newer major versions of numpy/scikit-learn can make the artifact
+# un-loadable, so they are deliberately not pinned with "==".
+
+fastapi>=0.115.0,<1.0.0
+uvicorn[standard]>=0.30.0
+python-multipart>=0.0.9
+python-dotenv>=1.0.0
+
+# scientific stack
+pandas>=2.2.0
+numpy>=2.0.0
+scikit-learn>=1.5.0
+joblib>=1.4.0
